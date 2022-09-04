@@ -46,6 +46,10 @@ const login = asyncHandler(async (req, res) => {
       message: "Login successful",
       user: {
         ...user._doc,
+        profile: {
+          data: user.profile.data.toString("base64"),
+          contentType: user.profile.contentType,
+        },
       },
       token: generateToken(user._id),
     });
