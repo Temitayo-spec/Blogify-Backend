@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Post = require("../models/postModel");
+const Post = require("../models/postModel");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 
@@ -159,6 +160,12 @@ const update = asyncHandler(async (req, res) => {
         contentType: req.file.mimetype,
       };
 
+      // search for all posts created by the user and update the name
+      await Post.updateMany(
+        { user: user._id },
+        { $set: { "user.name": user.name } }
+      );
+
       const updatedUser = await user.save();
 
       res.status(201).json({
@@ -195,6 +202,11 @@ const update = asyncHandler(async (req, res) => {
       user.name = name || user.name;
       user.email = email || user.email;
       user.password = password || user.password;
+
+      await Post.updateMany(
+        { user: user._id },
+        { $set: { "user.name": user.name } }
+      );
 
       const updatedUser = await user.save();
 

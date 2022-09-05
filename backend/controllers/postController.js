@@ -18,6 +18,7 @@ const createPost = asyncHandler(async (req, res) => {
         contentType: req.file.mimetype,
       },
       username,
+      userId: req.user.id,
     });
 
     const createdPost = await post.save();
@@ -37,6 +38,7 @@ const createPost = asyncHandler(async (req, res) => {
       title,
       content,
       username,
+      userId: req.user.id,
     });
 
     const createdPost = await post.save();
