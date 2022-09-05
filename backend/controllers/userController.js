@@ -218,7 +218,13 @@ const getUser = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     message: "User found",
-    ...user._doc,
+    user: {
+      ...user._doc,
+      profile: {
+        data: user.profile.data.toString("base64"),
+        contentType: user.profile.contentType,
+      },
+    }
   });
 });
 
