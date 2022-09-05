@@ -134,57 +134,85 @@ const register = asyncHandler(async (req, res) => {
 const update = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  const user = await User.findById(req.user.id);
-
-  // check if user is found
-  if (!user) {
-    res.status(404);
-    throw new Error("User not found");
-  }
-
-  // check if user is updating their own profile
-  if (user.id !== req.user.id) {
-    res.status(401);
-    throw new Error("Unauthorized");
-  }
-
   // check if profile image is provided
   if (req.file) {
-    const user = await User.findByIdAndUpdate(req.user.id, {
-      name: name || user.name,
-      email: email || user.email,
-      password: password || user.password,
-      profile: {
+    const user = await User.findById(req.user.id);
+
+    // check if user is found
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    // check if user is updating their own profile
+    if (user.id !== req.user.id) {
+      res.status(401);
+      throw new Error("Unauthorized");
+    }
+
+    if (user) {
+      user.name = name || user.name;
+      user.email = email || user.email;
+      user.password = password || user.password;
+      user.profile = {
         data: fs.readFileSync("upload/" + req.file.filename),
         contentType: req.file.mimetype,
-      },
-    });
+      };
 
-    res.status(200).json({
-      success: true,
-      message: "User updated successfully",
-      user: {
-        ...user._doc,
-        profile: {
-          data: user.profile.data.toString("base64"),
-          contentType: user.profile.contentType,
+      const updatedUser = await user.save();
+
+      res.status(201).json({
+        success: true,
+        message: "User updated successfully",
+        user: {
+          ...updatedUser._doc,
+          profile: {
+            data: updatedUser.profile.data.toString("base64"),
+            contentType: updatedUser.profile.contentType,
+          },
         },
-      },
-    });
+      });
+    } else {
+      res.status(404);
+      throw new Error("User not found");
+    }
   } else {
-    const user = await User.findByIdAndUpdate(req.user.id, {
-      name,
-      email,
-      password,
-    });
+    const user = await User.findById(req.user.id);
 
-    res.status(200).json({
-      success: true,
-      message: "User updated successfully",
-      user: {
-        ...user._doc,
-      },
-    });
+    // check if user is found
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    // check if user is updating their own profile
+    if (user.id !== req.user.id) {
+      res.status(401);
+      throw new Error("Unauthorized");
+    }
+
+    if (user) {
+      user.name = name || user.name;
+      user.email = email || user.email;
+      user.password = password || user.password;
+
+      const updatedUser = await user.save();
+
+      res.status(201).json({
+        success: true,
+        message: "User updated successfully",
+        user: {
+          ...updatedUser._doc,
+          profile: {
+            data: "",
+            contentType: "",
+          },
+        },
+      });
+    } else {
+      res.status(404);
+      throw new Error("User not found");
+    }
   }
 });
 
@@ -213,7 +241,6 @@ const deleteUser = asyncHandler(async (req, res) => {
 // @desc Get user data
 // @access Private
 const getUser = asyncHandler(async (req, res) => {
-  console.log(req.user);
   const user = await User.findById(req.user.id).select("-password");
   res.json({
     success: true,
