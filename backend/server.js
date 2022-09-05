@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 5000;
 app.use("/api/auth", require("./routes/users"));
 app.use("/api/posts", require("./routes/posts"));
 app.use("/api/categories", require("./routes/category"));
-app.use("/api/contact", require("./routes/contact").default);
+app.use("/api/contact", require("./routes/contact"));
 
 // using the error handler middleware
 app.use(errorHandler);
