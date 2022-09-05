@@ -16,7 +16,9 @@ const contact = asyncHandler(async (req, res) => {
     from: email,
     to: process.env.EMAIL,
     subject: `Message from ${name}`,
-    text: message,
+    html: `<p>Name: ${name}</p>
+           <p>Email: ${email}</p>
+           <p>Message: ${message}</p>`,
   };
 
   transporter.sendMail(mailOptions, (err, data) => {
