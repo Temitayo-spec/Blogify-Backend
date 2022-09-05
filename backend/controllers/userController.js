@@ -242,17 +242,30 @@ const deleteUser = asyncHandler(async (req, res) => {
 // @access Private
 const getUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
-  res.json({
-    success: true,
-    message: "User found",
-    user: {
-      ...user._doc,
-      profile: {
-        data: data === "" ? "" : user.profile.data.toString("base64"),
-        contentType: contentType === "" ? "" : user.profile.contentType,
+
+  if (user.profile.data !== "") {
+    res.json({
+      success: true,
+      user: {
+        ...user._doc,
+        profile: {
+          data: user.profile.data.toString("base64"),
+          contentType: user.profile.contentType,
+        },
       },
-    }
-  });
+    });
+  } else {
+    res.json({
+      success: true,
+      user: {
+        ...user._doc,
+        profile: {
+          data: "",
+          contentType: "",
+        },
+      },
+    });
+  }
 });
 
 module.exports = {
