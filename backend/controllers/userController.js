@@ -248,8 +248,8 @@ const getUser = asyncHandler(async (req, res) => {
     user: {
       ...user._doc,
       profile: {
-        data: user.profile.data.toString("base64"),
-        contentType: user.profile.contentType,
+        data: data === "" ? "" : user.profile.data.toString("base64"),
+        contentType: contentType === "" ? "" : user.profile.contentType,
       },
     }
   });
