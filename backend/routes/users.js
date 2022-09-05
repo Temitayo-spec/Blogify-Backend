@@ -39,7 +39,7 @@ const upload = multer({
 router.route("/user").get(protect, getUser);
 router.route("/login").post(login);
 router.route("/register").post(upload.single("profile"), register);
-router.route("/update/:id").put(protect,
+router.route("/update").put(protect,
   upload.single("profile"), update);
 router.route("/delete/:id").delete(protect, deleteUser);
 module.exports = router;
