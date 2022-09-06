@@ -19,7 +19,7 @@ const createPost = asyncHandler(async (req, res) => {
       },
       username,
       userId: req.user.id,
-      categories,
+      categories: categories.split(",").map((category) => category.trim()),
     });
 
     const createdPost = await post.save();
@@ -132,7 +132,9 @@ const updatePost = asyncHandler(async (req, res) => {
     post.title = title || post.title;
     post.content = content || post.content;
     post.image = image || post.image;
-    post.categories = categories || post.categories;
+    post.categories =
+      categories.split(",").map((category) => category.trim()) ||
+      post.categories;
     post.username = username || post.username;
     const updatedPost = await post.save();
     res.status(200).json({
