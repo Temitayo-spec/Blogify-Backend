@@ -40,6 +40,7 @@ const createPost = asyncHandler(async (req, res) => {
       content,
       username,
       userId: req.user.id,
+      categories,
     });
 
     const createdPost = await post.save();
