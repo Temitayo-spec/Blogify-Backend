@@ -8,6 +8,7 @@ const {
   deletePost,
 } = require("../controllers/postController");
 const multer = require("multer");
+const { protect } = require("../middleware/authMiddleware");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -34,11 +35,11 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-router.route("/").get(getPosts).post(upload.single("image"), createPost);
+router.route("/").get(getPosts).post(protect ,upload.single("image"), createPost);
 router
   .route("/:id")
   .get(getPost)
-  .put(upload.single("image"), updatePost)
-  .delete(deletePost);
+  .put(protect, upload.single("image"), updatePost)
+  .delete(protect, deletePost);
 
 module.exports = router;
