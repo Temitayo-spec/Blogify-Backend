@@ -6,7 +6,7 @@ const fs = require("fs");
 // @desc Create a post
 // @access Private
 const createPost = asyncHandler(async (req, res) => {
-  const { title, content, username } = req.body;
+  const { title, content, username, categories } = req.body;
 
   // Check if image is provided
   if (req.file) {
@@ -19,6 +19,7 @@ const createPost = asyncHandler(async (req, res) => {
       },
       username,
       userId: req.user.id,
+      categories,
     });
 
     const createdPost = await post.save();
@@ -124,13 +125,13 @@ const getPost = asyncHandler(async (req, res) => {
 // @desc Update a post
 // @access Private
 const updatePost = asyncHandler(async (req, res) => {
-  const { title, content, image, category, username } = req.body;
+  const { title, content, image, categories, username } = req.body;
   const post = await Post.findById(req.params.id);
   if (post) {
     post.title = title || post.title;
     post.content = content || post.content;
     post.image = image || post.image;
-    post.category = category || post.category;
+    post.categories = categories || post.categories;
     post.username = username || post.username;
     const updatedPost = await post.save();
     res.status(200).json({
