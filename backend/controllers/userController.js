@@ -202,9 +202,14 @@ const update = asyncHandler(async (req, res) => {
       user.email = email || user.email;
       user.password = password || user.password;
 
+      // get all post made by user
+      const posts = await Post.find({ user: user._id });
+
+      console.log(posts);
+
       // update all posts with user's id
       await Post.updateMany(
-        { userId: user._id },
+        { user: user._id },
         { $set: { "user.name": user.name } }
       );
 
