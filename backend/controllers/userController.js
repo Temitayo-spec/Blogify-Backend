@@ -203,8 +203,9 @@ const update = asyncHandler(async (req, res) => {
       user.email = email || user.email;
       user.password = password || user.password;
 
+      // update all posts with user's id
       await Post.updateMany(
-        { user: user._id },
+        { userId: user._id },
         { $set: { "user.name": user.name } }
       );
 
