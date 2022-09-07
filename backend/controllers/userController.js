@@ -159,10 +159,10 @@ const update = asyncHandler(async (req, res) => {
         contentType: req.file.mimetype,
       };
 
-      // search for all posts created by the user and update the name
+      // change the username on post made by user
       await Post.updateMany(
-        { user: user._id },
-        { $set: { "user.name": user.name } }
+        { userId: req.user._id },
+        { $set: { username: user.name } }
       );
 
       const updatedUser = await user.save();
@@ -202,15 +202,10 @@ const update = asyncHandler(async (req, res) => {
       user.email = email || user.email;
       user.password = password || user.password;
 
-      // get all post made by user
-      const posts = await Post.find({ user: user._id });
-
-      console.log(posts);
-
-      // update all posts with user's id
+      // change the username on post made by user
       await Post.updateMany(
-        { user: user._id },
-        { $set: { "user.name": user.name } }
+        { userId: req.user._id },
+        { $set: { "username": user.name } }
       );
 
       const updatedUser = await user.save();
