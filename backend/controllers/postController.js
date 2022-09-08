@@ -126,15 +126,12 @@ const getPost = asyncHandler(async (req, res) => {
 // @desc Update a post
 // @access Private
 const updatePost = asyncHandler(async (req, res) => {
-  const { title, content, image, categories, username } = req.body;
+  const { title, content, image, username } = req.body;
   const post = await Post.findById(req.params.id);
   if (post) {
     post.title = title || post.title;
     post.content = content || post.content;
     post.image = image || post.image;
-    post.categories =
-      categories.split(",").map((category) => category.trim()) ||
-      post.categories;
     post.username = username || post.username;
     const updatedPost = await post.save();
     res.status(200).json({
